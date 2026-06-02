@@ -1,0 +1,78 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f2f4f8;
+}
+
+.login-box {
+  width: 350px;
+  margin: 100px auto;
+  padding: 25px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+input, button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 12px;
+}
+
+button {
+  background: #1f6feb;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+#message {
+  color: red;
+}
+.event-card {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 10px;
+}
+
+.green {
+  color: green;
+  font-weight: bold;
+}
+
+.amber {
+  color: orange;
+  font-weight: bold;
+}
+
+.red {
+  color: red;
+  font-weight: bold;
+}
+.event-card {
+  border: 1px solid #ccc;
+  padding: 12px;
+  margin: 12px;
+  border-radius: 6px;
+  background: white;
+}
+
+.green {
+  color: green;
+  font-weight: bold;
+}
+
+.amber {
+  color: orange;
+  font-weight: bold;
+}
+
+.red {
+  color: red;
+  font-weight: bold;
+}
+
+button {
+  margin: 5px;
+  padding: 8px 12px;
+  cursor: pointer;
+}

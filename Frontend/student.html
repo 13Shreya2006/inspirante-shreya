@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Student Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Student Dashboard</h1>
+
+<h2>Upcoming Events</h2>
+<div id="events"></div>
+
+<h2>My Registrations</h2>
+<div id="myRegistrations"></div>
+
+<hr>
+<button onclick="logout()">Logout</button>
+
+<script>
+const user = JSON.parse(localStorage.getItem("user"));
+
+async function loadEvents() {
+  const response = await fetch("http://localhost:3000/api/events");
+  const events = await response.json();
+
+  let html = "";
+
+  events.forEach(event => {
+    const formattedDate = event.event_date.split("T")[0];
+    const isFull = event.registered_count >= event.capacity;
+
+    html += `
+      <div class="event-card">
+        <h3>${event.event_name}</h3>
+        <p>Date: ${formattedDate}</p>
+        <p>Venue: ${event.venue}</p>
+        <p>Registered: ${event.registered_count}/${event.capacity}</p>
+
+        ${
+          isFull
+            ? `<p><b>Full</b></p>`
+            : `
+              <button onclick="registerEvent(${event.id})">Register</button>
+              <p id="msg-${event.id}"></p>
+            `
+        }
+      </div>
+    `;
+  });
+
+  document.getElementById("events").innerHTML = html;
+}
+
+async function loadMyRegistrations() {
+  const response = await fetch(
+    `http://localhost:3000/api/my-registrations/${user.id}`
+  );
+
+  const registrations = await response.json();
+
+  let html = "";
+
+  if (registrations.length === 0) {
+    html = "<p>No registrations yet.</p>";
+  }
+
+  registrations.forEach(reg => {
+    const formattedDate = reg.event_date.split("T")[0];
+
+    html += `
+      <div class="event-card">
+        <h3>${reg.event_name}</h3>
+        <p>Date: ${formattedDate}</p>
+        <p>Venue: ${reg.venue}</p>
+      </div>
+    `;
+  });
+
+  document.getElementById("myRegistrations").innerHTML = html;
+}
+
+async function registerEvent(eventId) {
+  const messageBox = document.getElementById(`msg-${eventId}`);
+
+  try {
+    const response = await fetch("http://localhost:3000/api/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        student_id: user.id,
+        event_id: eventId
+      })
+    });
+
+    const data = await response.json();
+
+    messageBox.textContent = data.message;
+    messageBox.style.fontWeight = "bold";
+    messageBox.style.color = response.ok ? "green" : "red";
+
+    loadMyRegistrations();
+
+  } catch (error) {
+    messageBox.textContent = "Could not register.";
+    messageBox.style.color = "red";
+    messageBox.style.fontWeight = "bold";
+  }
+}
+
+function logout() {
+  localStorage.clear();
+  window.location.href = "login.html";
+}
+
+loadEvents();
+loadMyRegistrations();
+</script>
+
+</body>
+</html>
