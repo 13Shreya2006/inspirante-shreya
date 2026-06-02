@@ -1,7 +1,13 @@
 async function login() {
+  const role = document.getElementById("role").value;
   const username = document.getElementById("username").value;
   const password = document.getElementById("password").value;
   const message = document.getElementById("message");
+
+  if (!role) {
+    message.textContent = "Please select a role";
+    return;
+  }
 
   try {
     const response = await fetch("http://localhost:3000/api/login", {
@@ -19,6 +25,11 @@ async function login() {
       return;
     }
 
+    if (role !== data.user.role) {
+      message.textContent = "Selected role does not match account";
+      return;
+    }
+
     localStorage.setItem("token", data.token);
     localStorage.setItem("user", JSON.stringify(data.user));
 
@@ -27,6 +38,7 @@ async function login() {
     } else {
       window.location.href = "student.html";
     }
+
   } catch (error) {
     message.textContent = "Something went wrong. Please try again.";
   }
